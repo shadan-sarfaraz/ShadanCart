@@ -23,8 +23,8 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--light-gray);
-  color: var(--text-color);
+  background-color: #f1f3f6;
+  color: #212121;
 }
 
 .App {
@@ -32,6 +32,11 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+a {
+  text-decoration: none;
+  color: inherit;
+  }
 
 button {
   cursor: pointer;

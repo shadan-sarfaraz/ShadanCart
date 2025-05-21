@@ -3,12 +3,12 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ProductCard from '../components/products/ProductCard';
 import Cart from '../components/cart/Cart';
+import Categories from '../components/categories/Categories';
 import './Home.css';
 
-const Home = () => {
+const Home = ({ cart, setShowCart, addToCart }) => {
   const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
+  const [isCartVisible, setIsCartVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [currentBanner, setCurrentBanner] = useState(0);
@@ -41,13 +41,15 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Sample products data
+    // Sample products data for all categories
     const sampleProducts = [
+      // Electronics
       {
         id: 1,
         name: "iPhone 13 Pro (256GB) - Sierra Blue",
         price: 119900,
         category: "electronics",
+        subcategory: "mobile",
         image: "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-13-pro-max-1.jpg"
       },
       {
@@ -55,60 +57,137 @@ const Home = () => {
         name: "Samsung Galaxy S21 Ultra 5G",
         price: 99999,
         category: "electronics",
+        subcategory: "mobile",
         image: "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s21-ultra-5g-1.jpg"
       },
       {
         id: 3,
-        name: "Men's Cotton T-Shirt",
-        price: 599,
-        category: "fashion",
-        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 4,
-        name: "Women's Summer Dress",
-        price: 1299,
-        category: "fashion",
-        image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 5,
-        name: "Sony WH-1000XM4 Headphones",
-        price: 29999,
-        category: "electronics",
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 6,
-        name: "Men's Denim Jacket",
-        price: 2499,
-        category: "fashion",
-        image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 7,
         name: "MacBook Pro M1 (16GB/512GB)",
         price: 149900,
         category: "electronics",
+        subcategory: "laptops",
         image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 4,
+        name: "Sony WH-1000XM4 Headphones",
+        price: 29999,
+        category: "electronics",
+        subcategory: "audio",
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80"
+      },
+      // Fashion
+      {
+        id: 5,
+        name: "Men's Cotton T-Shirt",
+        price: 599,
+        category: "fashion",
+        subcategory: "mens",
+        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 6,
+        name: "Women's Summer Dress",
+        price: 1299,
+        category: "fashion",
+        subcategory: "womens",
+        image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 7,
+        name: "Men's Denim Jacket",
+        price: 2499,
+        category: "fashion",
+        subcategory: "mens",
+        image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=80"
       },
       {
         id: 8,
         name: "Women's Leather Handbag",
         price: 3999,
         category: "fashion",
+        subcategory: "womens",
         image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=80"
+      },
+      // Home
+      {
+        id: 9,
+        name: "Modern Sofa Set",
+        price: 45999,
+        category: "home",
+        subcategory: "furniture",
+        image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 10,
+        name: "Kitchen Storage Set",
+        price: 2999,
+        category: "home",
+        subcategory: "kitchen",
+        image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=500&auto=format&fit=crop&q=80"
+      },
+      // Grocery
+      {
+        id: 11,
+        name: "Organic Fruits Basket",
+        price: 999,
+        category: "grocery",
+        subcategory: "fruits",
+        image: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 12,
+        name: "Fresh Vegetables Pack",
+        price: 499,
+        category: "grocery",
+        subcategory: "vegetables",
+        image: "https://images.unsplash.com/photo-1597362925123-77861d3fbac7?w=500&auto=format&fit=crop&q=80"
+      },
+      // Beauty
+      {
+        id: 13,
+        name: "Luxury Makeup Kit",
+        price: 4999,
+        category: "beauty",
+        subcategory: "makeup",
+        image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 14,
+        name: "Premium Skincare Set",
+        price: 3999,
+        category: "beauty",
+        subcategory: "skincare",
+        image: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=500&auto=format&fit=crop&q=80"
+      },
+      // Toys
+      {
+        id: 15,
+        name: "Educational Toy Set",
+        price: 1499,
+        category: "toys",
+        subcategory: "toys",
+        image: "https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=500&auto=format&fit=crop&q=80"
+      },
+      {
+        id: 16,
+        name: "Baby Care Kit",
+        price: 1999,
+        category: "toys",
+        subcategory: "baby",
+        image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&auto=format&fit=crop&q=80"
       }
     ];
     setProducts(sampleProducts);
   }, []);
 
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-  };
-
   const removeFromCart = (productId) => {
     setCart(cart.filter(item => item.id !== productId));
+  };
+
+  const handleCategorySelect = (category, subcategory) => {
+    setSelectedCategory(category);
+    // You can also handle subcategory filtering here if needed
   };
 
   const filteredProducts = products.filter(product => {
@@ -133,7 +212,7 @@ const Home = () => {
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 
       />
-
+      <Categories onCategorySelect={handleCategorySelect} />
       <main className="main-content">
         <div className="banner-section">
           <div className="banner-container">
@@ -164,24 +243,16 @@ const Home = () => {
         </div>
 
         <div className="products-section">
-          <div className="category-filter">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="all">All Categories</option>
-              <option value="electronics">Electronics</option>
-              <option value="fashion">Fashion</option>
-            </select>
-          </div>
-
-          <h2 className="section-title">Featured Products</h2>
+          <h2 className="section-title">
+            {selectedCategory === 'all' ? 'All Products' : `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} Products`}
+          </h2>
           <div className="product-grid">
             {filteredProducts.map(product => (
               <ProductCard 
                 key={product.id} 
                 product={product} 
-                addToCart={addToCart} 
+                addToCart={addToCart}
+                cart={cart}
               />
             ))}
           </div>
@@ -190,11 +261,11 @@ const Home = () => {
 
       <Footer />
 
-      {showCart && (
+      {isCartVisible && (
         <Cart 
           cart={cart} 
           removeFromCart={removeFromCart} 
-          setShowCart={setShowCart} 
+          setShowCart={setIsCartVisible} 
         />
       )}
     </div>
